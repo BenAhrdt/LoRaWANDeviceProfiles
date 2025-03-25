@@ -3,7 +3,7 @@ So you can import the downloaded profiles in your adapter instance.
 
 Adapter:
 
-[https://github.com/BenAhrdt/ioBroker.lorawan]([GitHub - BenAhrdt/ioBroker.lorawan: communicates bidirectionally with LoraWan devices via LoRaWAN Network](https://github.com/BenAhrdt/ioBroker.lorawan))
+[https://github.com/BenAhrdt/ioBroker.lorawan](https://github.com/BenAhrdt/ioBroker.lorawan)
 
 
 
