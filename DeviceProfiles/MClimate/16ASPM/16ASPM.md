@@ -1,6 +1,6 @@
 The use of the 16ASPM and the "16 Dry Switch" is identical
 
-![](https://github.com/BenAhrdt/LoRaWANDeviceProfiles/tree/main/Data/Pics/16ASPM)\2025-03-27-10-44-54-image.png)
+![]([https://github.com/BenAhrdt/LoRaWANDeviceProfiles/tree/main/Data/Pics/16ASPM)\2025-03-27-10-44-54-image.png](https://github.com/BenAhrdt/LoRaWANDeviceProfiles/blob/main/Data/Pics/16ASPM/2025-03-27-10-44-54-image.png))
 
 downlink control: the data points are generated
 
