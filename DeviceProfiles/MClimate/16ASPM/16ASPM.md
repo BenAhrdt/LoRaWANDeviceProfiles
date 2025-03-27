@@ -20,6 +20,8 @@ Switch on the relay for a specific period of time. This can be specified in mill
 
 ![](https://github.com/BenAhrdt/LoRaWANDeviceProfiles/blob/main/Data/Pics/16ASPM/2025-03-27-11-17-53-image.png)
 
+NEW:
+Switch off the relay for a specific period of time. This can be specified in seconds.
 
 
 
