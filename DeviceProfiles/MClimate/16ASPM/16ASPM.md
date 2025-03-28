@@ -1,5 +1,14 @@
 The use of the 16ASPM and the "16 Dry Switch" is identical
 
+The recommended method is to use the decoder from the repository. The difference from the original decoder is the added line:
+
+     // Relay state
+        data.device = "16ASPM";
+
+This sets "16ASPM" in the device entry, thereby creating the downlink configuration data points in the command.
+By using this customized decoder, the setup is already completed automatically (after the first uplink).
+
+
 ![](https://github.com/BenAhrdt/LoRaWANDeviceProfiles/blob/main/Data/Pics/16ASPM/2025-03-27-10-44-54-image.png)
 
 downlink control: the data points are generated
