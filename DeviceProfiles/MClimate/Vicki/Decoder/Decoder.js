@@ -72,8 +72,8 @@ function decodeUplink(input) {
         data.AntiFreezeProtection = toBool(antiFreezeProtection);
     	data.Mode = 0;
         data.ValveOpenness = motorRange != 0 ? Math.round((1-(motorPosition/motorRange))*100) : 0;
-        if(!data.hasOwnProperty('TargetTemperatureFloat')){
-            data.TargetTemperatureFloat = parseFloat(bytes[1])
+        if(!data.hasOwnProperty('targetTemperatureFloat')){
+            data.targetTemperatureFloat = parseFloat(bytes[1])
         }
       
 		// Battery calculation
