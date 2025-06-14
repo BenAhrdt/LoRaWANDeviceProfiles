@@ -49,6 +49,12 @@ function decodeUplink(input) {
       data.BatV=bat,
       data.Mod=mod
   	}
+    // Battery calculation
+    max = 3.1;
+    min = 2.1;
+    div = max - min;
+    actDiv = Math.min(Math.max(bat, min), max) - min;
+    data.BatteryPercent = Math.round((actDiv / div) * 100);
 	data.devicetype = "Dragino";
   	return {
   		data: data,
