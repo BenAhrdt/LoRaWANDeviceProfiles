@@ -6,7 +6,7 @@ function decodeUplink(input) {
   
   var contact=bytes[0]&0x80?false:true;
   var state = contact? "geschlossen": "offen";
-  var water_leak_status=bytes[0]&0x40?false:true;
+  var water_leak_status=bytes[0]&0x40?true:false;
   
   var mod=bytes[2];
   var alarm=bytes[9]&0x01;
