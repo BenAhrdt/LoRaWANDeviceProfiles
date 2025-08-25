@@ -1,68 +1,78 @@
 function decodeUplink(input) {
-  var port = input.fPort;
   var bytes = input.bytes;
-  var value=(bytes[0]<<8 | bytes[1])&0x3FFF;
-  var bat=value/1000;//Battery,units:V
-  
-  var contact=bytes[0]&0x80?false:true;
-  var state = contact? "geschlossen": "offen";
-  var water_leak_status=bytes[0]&0x40?true:false;
-  
-  var mod=bytes[2];
-  var alarm=bytes[9]&0x01;
+  var port = input.fPort;
   var data = {};
-  switch (input.fPort) {
- 	case 10:
-    if(mod==1){
-      var open_times=bytes[3]<<16 | bytes[4]<<8 | bytes[5];
-      var open_duration=bytes[6]<<16 | bytes[7]<<8 | bytes[8];//units:min
 
-        data.BatV=bat,
-        data.Mod=mod,
-        data.Contact=contact,
-        data.Opened=!contact,
-		data.StateText = state,
-        data.OpenTimes=open_times,
-        data.LastOpenDuration=open_duration,
-       data.Alarm=alarm
-  	}
-  	else if(mod==2){
-  		var leak_times=bytes[3]<<16 | bytes[4]<<8 | bytes[5];
-  		var leak_duration=bytes[6]<<16 | bytes[7]<<8 | bytes[8];//units:min
-  
-      	data.BatV=bat,
-      	data.Mod=mod,
-      	data.WaterLeakStatus=water_leak_status,
-      	data.WaterLeakTimes=leak_times,
-      	data.LastWaterLeakDuration=leak_duration
-	}
-  	else if(mod==3){
-      data.BatV=bat,
-      data.Mod=mod,
-      data.Contact=contact,
-	  data.Opened=!contact,
-	  data.State = state,
-      data.WaterLeakStatus=water_leak_status,
-      data.Alarm=alarm
-  	}
- 	else{
-      data.BatV=bat,
-      data.Mod=mod
-  	}
-    // Battery calculation
-    max = 3.1;
-    min = 2.1;
-    div = max - min;
-    actDiv = Math.min(Math.max(bat, min), max) - min;
-    data.BatteryPercent = Math.round((actDiv / div) * 100);
-	data.devicetype = "Dragino";
-  	return {
-  		data: data,
+  // Hilfsfunktionen
+  function readUInt24BE(b1, b2, b3) {
+    return (b1 << 16) | (b2 << 8) | b3;
+  }
+
+  // --- Batteriewert aus Byte 0+1 ---
+  if (bytes.length < 2) {
+    return { errors: ["Payload zu kurz (" + bytes.length + " Bytes)"] };
+  }
+
+  var value = ((bytes[0] << 8) | bytes[1]) & 0x3FFF;
+  var bat = value / 1000; // V
+  data.BatV = bat;
+
+  // Kontakt & Leak
+  var contact = (bytes[0] & 0x80) ? false : true; // 1=geschlossen
+  data.Contact = contact;
+  data.Opened = !contact;
+  data.State = contact ? "geschlossen" : "offen";
+
+  var water_leak_status = (bytes[0] & 0x40) ? true : false;
+
+  // Batterieladung Prozent
+  var max = 3.1, min = 2.1;
+  var div = max - min;
+  var actDiv = Math.min(Math.max(bat, min), max) - min;
+  data.BatteryPercent = Math.round((actDiv / div) * 100);
+
+  // Gerätetyp für Klarheit
+  data.devicetype = "Dragino";
+
+  // --- Portspezifisch auswerten ---
+  switch (port) {
+    case 10: {
+      var mod = bytes[2];
+      data.Mod = mod;
+
+      if (mod === 1 && bytes.length >= 10) {
+        // Türkontakt
+        var open_times = readUInt24BE(bytes[3], bytes[4], bytes[5]);
+        var open_duration = readUInt24BE(bytes[6], bytes[7], bytes[8]);
+        var alarm = bytes[9] & 0x01;
+
+        data.OpenTimes = open_times;
+        data.LastOpenDuration = open_duration;
+        data.Alarm = alarm;
+      }
+      else if (mod === 2 && bytes.length >= 9) {
+        // Wasserleck
+        var leak_times = readUInt24BE(bytes[3], bytes[4], bytes[5]);
+        var leak_duration = readUInt24BE(bytes[6], bytes[7], bytes[8]);
+
+        data.WaterLeakStatus = water_leak_status;
+        data.WaterLeakTimes = leak_times;
+        data.LastWaterLeakDuration = leak_duration;
+      }
+      else if (mod === 3 && bytes.length >= 10) {
+        // Kombi‑Modus
+        var alarm = bytes[9] & 0x01;
+        data.WaterLeakStatus = water_leak_status;
+        data.Alarm = alarm;
+      }
+      // sonst: nur Basisinfos BatV, Mod enthalten
+      return { data: data };
     }
 
-	default:
-    return {
-      errors: ["unknown FPort"]
-    }
+    default:
+      return { 
+        errors: ["Unsupported or unknown FPort: " + port],
+        data: data
+      };
   }
 }
