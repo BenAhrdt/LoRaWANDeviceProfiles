@@ -54,24 +54,24 @@ function decodeUplink(input) {
         
         data.Device = "Vicki";
         
-        data.Reason = Number(bytes[0].toString(16));
-        data.TargetTemperature = Number(bytes[1]);
-        data.SensorTemperature = Number(sensorTemp.toFixed(2));
-        data.RelativeHumidity = Number(((bytes[3] * 100) / 256).toFixed(2));
-        data.MotorRange = motorRange;
-        data.MotorPosition = motorPosition;
-        data.BatteryVoltage = Number(batteryVoltageCalculated.toFixed(2));
-        data.OpenWindow = toBool(openWindow);
-        data.HighMotorConsumption = toBool(highMotorConsumption);
-        data.LowMotorConsumption = toBool(lowMotorConsumption);
-        data.BrokenSensor = toBool(brokenSensor);
-        data.ChildLock = toBool(childLock);
-        data.CalibrationFailed = toBool(calibrationFailed);
-        data.AttachedBackplate = toBool(attachedBackplate);
-        data.PerceiveAsOnline = toBool(perceiveAsOnline);
-        data.AntiFreezeProtection = toBool(antiFreezeProtection);
-    	data.Mode = 0;
-        data.ValveOpenness = motorRange != 0 ? Math.round((1-(motorPosition/motorRange))*100) : 0;
+        data.reason = Number(bytes[0].toString(16));
+        data.targetTemperature = Number(bytes[1]);
+        data.sensorTemperature = Number(sensorTemp.toFixed(2));
+        data.relativeHumidity = Number(((bytes[3] * 100) / 256).toFixed(2));
+        data.motorRange = motorRange;
+        data.motorPosition = motorPosition;
+        data.batteryVoltage = Number(batteryVoltageCalculated.toFixed(2));
+        data.openWindow = toBool(openWindow);
+        data.highMotorConsumption = toBool(highMotorConsumption);
+        data.lowMotorConsumption = toBool(lowMotorConsumption);
+        data.brokenSensor = toBool(brokenSensor);
+        data.childLock = toBool(childLock);
+        data.calibrationFailed = toBool(calibrationFailed);
+        data.notattachedBackplate = toBool(!attachedBackplate);
+        data.perceiveAsOnline = toBool(perceiveAsOnline);
+        data.antiFreezeProtection = toBool(antiFreezeProtection);
+    	data.mode = 0;
+        data.valveOpenness = motorRange != 0 ? Math.round((1-(motorPosition/motorRange))*100) : 0;
         if(!data.hasOwnProperty('targetTemperatureFloat')){
             data.targetTemperatureFloat = parseFloat(bytes[1]);
         }
@@ -80,13 +80,13 @@ function decodeUplink(input) {
 		max = 3.65;
 		min = 2.1;
       	div = max - min;
-  	    actDiv = Math.min(Math.max(data.BatteryVoltage, min), max) - min;
-        data.BatteryPercent = Math.round((actDiv / div) * 100);
+  	    actDiv = Math.min(Math.max(data.batteryVoltage, min), max) - min;
+        data.batteryPercent = Math.round((actDiv / div) * 100);
       
-      	if(data.BatteryVoltage < 3){
-			data.LowBat = true;
+      	if(data.batteryVoltage < 3){
+			data.lowBat = true;
         }else{
-			data.LowBat = false;
+			data.lowBat = false;
 		}
 
         return data;
@@ -598,7 +598,21 @@ function decodeUplink(input) {
         }
     }
 
+    function capitalizeKeys(obj) {
+      if (Array.isArray(obj)) {
+        return obj.map(capitalizeKeys);
+      } else if (obj !== null && typeof obj === "object") {
+        return Object.fromEntries(
+          Object.entries(obj).map(([key, value]) => {
+            const newKey = key.charAt(0).toUpperCase() + key.slice(1);
+            return [newKey, capitalizeKeys(value)];
+          })
+        );
+      }
+      return obj; // primitive Werte unverändert zurückgeben
+    }
+
     return {
-        data: data
+        data: capitalizeKeys(data)
     };
 }
