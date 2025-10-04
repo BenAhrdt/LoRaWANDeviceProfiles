@@ -47,13 +47,9 @@ function decodeUplink(input) {
         if (Number(bytes[0].toString(16))  == 1) {
             sensorTemp = (bytes[2] * 165) / 256 - 40;
         }
-        
         if (Number(bytes[0].toString(16)) == 81) {
             sensorTemp = (bytes[2] - 28.33333) / 5.66666;
         }
-        
-        data.Device = "Vicki";
-        
         data.reason = Number(bytes[0].toString(16));
         data.targetTemperature = Number(bytes[1]);
         data.sensorTemperature = Number(sensorTemp.toFixed(2));
@@ -67,15 +63,17 @@ function decodeUplink(input) {
         data.brokenSensor = toBool(brokenSensor);
         data.childLock = toBool(childLock);
         data.calibrationFailed = toBool(calibrationFailed);
-        data.notattachedBackplate = toBool(!attachedBackplate);
+        data.attachedBackplate = toBool(attachedBackplate);
         data.perceiveAsOnline = toBool(perceiveAsOnline);
         data.antiFreezeProtection = toBool(antiFreezeProtection);
-    	data.mode = 0;
         data.valveOpenness = motorRange != 0 ? Math.round((1-(motorPosition/motorRange))*100) : 0;
         if(!data.hasOwnProperty('targetTemperatureFloat')){
             data.targetTemperatureFloat = parseFloat(bytes[1]);
         }
         
+        // Own decoder Data
+        data.Device = "Vicki";
+        data.notAttachedBackplate = !data.attachedBackplate;
 		// Battery calculation
 		max = 3.65;
 		min = 2.1;
@@ -88,6 +86,7 @@ function decodeUplink(input) {
         }else{
 			data.lowBat = false;
 		}
+        ////////////////////////////////////////////////
 
         return data;
     }
@@ -338,6 +337,13 @@ function decodeUplink(input) {
                         resultToPass = merge_obj(resultToPass, data);
                     }
                 break;
+                case '4b':
+                    {
+                        command_len = 1;
+                        var data = { 'patchVersion' : parseInt(commands[i + 1], 16) };
+                        resultToPass = merge_obj(resultToPass, data);
+                    }
+                break;
                 case '4d':
                     {
                         command_len = 2;
@@ -570,8 +576,7 @@ function decodeUplink(input) {
                                       parseInt(commands[i + 4], 16);
                     var fuota_address_raw = commands[i + 1] + commands[i + 2] + 
                                           commands[i + 3] + commands[i + 4];
-                    
-                    data.fuota = { fuota_address: fuota_address, fuota_address_raw: fuota_address_raw };
+                    resultToPass = merge_obj(resultToPass, { fuota: { fuota_address: fuota_address, fuota_address_raw: fuota_address_raw } });
                     break;
                 }
                 default:
@@ -591,13 +596,13 @@ function decodeUplink(input) {
         if ('decodeKeepalive' in data) {
             delete data.decodeKeepalive;
         }
-
         if (shouldKeepAlive) {
             bytes = bytes.slice(-9);
             data = merge_obj(data, handleKeepalive(bytes, data));
         }
     }
 
+    // Own Decoder Data
     function capitalizeKeys(obj) {
       if (Array.isArray(obj)) {
         return obj.map(capitalizeKeys);
@@ -611,6 +616,7 @@ function decodeUplink(input) {
       }
       return obj; // primitive Werte unverändert zurückgeben
     }
+    /////////////////////////////////////////////////////////
 
     return {
         data: capitalizeKeys(data)
