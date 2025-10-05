@@ -373,6 +373,25 @@ function decodeUplink(input) {
                         resultToPass = merge_obj(resultToPass, data);
                     }
                 break;
+                case '58':
+                    {
+                        command_len = 1;
+                        var notificationByte = parseInt(commands[i + 1], 16);
+                        
+                        // Extract notification flags from bits
+                        var temperatureRestoredAfterManualBoost = !!(notificationByte & 0x01);  // Bit 0
+                        var temperatureChangedByHeatingSchedule = !!(notificationByte & 0x02);   // Bit 1
+                        
+                        var data = {
+                            notifications: {
+                                temperatureRestoredAfterManualBoost: temperatureRestoredAfterManualBoost,
+                                temperatureChangedByHeatingSchedule: temperatureChangedByHeatingSchedule
+                            }
+                        };
+                        resultToPass = merge_obj(resultToPass, data);
+                    }
+                break;
+                
                 case '5a':
                     {
                         command_len = 41;
@@ -492,6 +511,18 @@ function decodeUplink(input) {
                     resultToPass = merge_obj(resultToPass, data);
                     break;
                 }
+                case '64': {
+                    command_len = 1;
+                    var ledDurationValue = parseInt(commands[i + 1], 16);
+                    var durationInSeconds = ledDurationValue / 2; // As per the docs, value is divided by 2 to get seconds
+                    
+                    var data = {
+                        ledIndicationDuration: durationInSeconds
+                    };
+                    
+                    resultToPass = merge_obj(resultToPass, data);
+                    break;
+                }
                 case '66': {
                     command_len = 2;
 
@@ -565,6 +596,12 @@ function decodeUplink(input) {
                         heatingEventStates: heatingEventStates
                     };
                     
+                    resultToPass = merge_obj(resultToPass, data);
+                    break;
+                }
+                case '6e': {
+                    command_len = 1;
+                    var data = { timeRequestByMACcommand: parseInt(commands[i + 1], 16) };
                     resultToPass = merge_obj(resultToPass, data);
                     break;
                 }
