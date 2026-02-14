@@ -47,3 +47,9 @@ es müssen folgende Attriubute vorhanden sein:
 #### Ergebnis:
 
 <img width="1480" height="964" alt="image" src="https://github.com/user-attachments/assets/08342d31-0d64-485c-9e73-754c75d6a84c" />
+
+
+
+#### Install Traccar:
+
+[https://github.com/J-Paul0815/SmartHome/tree/main/Projects/Traccar](https://github.com/J-Paul0815/SmartHome/tree/main/Projects/Traccar)
