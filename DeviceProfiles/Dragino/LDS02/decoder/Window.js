@@ -1,4 +1,4 @@
-function decodeUplink(input) {
+jsfunction decodeUplink(input) {
   var port = input.fPort;
   var hardware = (input.bytes[10] & 0xC0) >> 6;
   var mode0 = input.bytes[10] & 0xff;
