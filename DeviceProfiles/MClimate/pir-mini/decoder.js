@@ -170,7 +170,25 @@ function decodeUplink(input) {
             }
         }
 
-        return { data: data };
+    function capitalizeKeys(obj) {
+        if (Array.isArray(obj)) {
+            return obj.map(capitalizeKeys);
+        } else if (obj !== null && typeof obj === "object") {
+            return Object.fromEntries(
+                Object.entries(obj).map(function(entry) {
+                    var key = entry[0];
+                    var value = entry[1];
+                    var newKey = key.charAt(0).toUpperCase() + key.slice(1);
+                    return [newKey, capitalizeKeys(value)];
+                })
+            );
+        }
+        return obj;
+    }
+
+    return {
+        data: capitalizeKeys(data)
+    };
     } catch (e) {
         throw new Error('Unhandled data');
     }
