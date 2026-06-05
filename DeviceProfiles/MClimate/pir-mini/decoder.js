@@ -10,7 +10,7 @@ function Decode(port, bytes){
     return decoded;
 }
 
-// The Things Industries / Main
+// The Things Industries / Chirpstack / Main
 function decodeUplink(input) {
     try {
         var bytes = input.bytes;
@@ -63,6 +63,8 @@ function decodeUplink(input) {
             // Bytes 8-9: PIR trigger count
             // Byte 8: bits [15:8], Byte 9: bits [7:0]
             data.pirTriggerCount = (bytes[8] << 8) | bytes[9];
+
+            data.devicetyp = "MC-PIR-Mini";
             
             return data;
         }
@@ -159,6 +161,22 @@ function decodeUplink(input) {
             return data;
         }
 
+        function capitalizeKeys(obj) {
+            if (Array.isArray(obj)) {
+                return obj.map(capitalizeKeys);
+            } else if (obj !== null && typeof obj === "object") {
+                return Object.fromEntries(
+                    Object.entries(obj).map(function(entry) {
+                        var key = entry[0];
+                        var value = entry[1];
+                        var newKey = key.charAt(0).toUpperCase() + key.slice(1);
+                        return [newKey, capitalizeKeys(value)];
+                    })
+                );
+            }
+            return obj;
+        }
+
         // Route the message based on the command byte
         if (bytes[0] == 1) {
             data = handleKeepalive(bytes, data);
@@ -170,25 +188,9 @@ function decodeUplink(input) {
             }
         }
 
-    function capitalizeKeys(obj) {
-        if (Array.isArray(obj)) {
-            return obj.map(capitalizeKeys);
-        } else if (obj !== null && typeof obj === "object") {
-            return Object.fromEntries(
-                Object.entries(obj).map(function(entry) {
-                    var key = entry[0];
-                    var value = entry[1];
-                    var newKey = key.charAt(0).toUpperCase() + key.slice(1);
-                    return [newKey, capitalizeKeys(value)];
-                })
-            );
-        }
-        return obj;
-    }
-
-    return {
-        data: capitalizeKeys(data)
-    };
+        return {
+            data: capitalizeKeys(data)
+        };
     } catch (e) {
         throw new Error('Unhandled data');
     }
