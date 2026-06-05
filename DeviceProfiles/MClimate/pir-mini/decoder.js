@@ -64,7 +64,7 @@ function decodeUplink(input) {
             // Byte 8: bits [15:8], Byte 9: bits [7:0]
             data.pirTriggerCount = (bytes[8] << 8) | bytes[9];
 
-            data.devicetyp = "MC-PIR-Mini";
+            data.devicetype = "MC-PIR-Mini";
             
             return data;
         }
