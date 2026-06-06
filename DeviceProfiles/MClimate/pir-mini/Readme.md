@@ -37,7 +37,7 @@ Changes made to the decoder
 
 ### Result MQTT Live Monitor
 
-<img width="1280" height="820" alt="image" src="https://github.com/user-attachments/assets/c1f367f2-a0a0-4bea-aec9-c200482c969f" />
+<img width="1050" height="692" alt="image" src="https://github.com/user-attachments/assets/f6abd726-9436-4993-ae76-6256c4fe4e50" />
 
 
 
