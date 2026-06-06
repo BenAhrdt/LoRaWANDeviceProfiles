@@ -10,7 +10,7 @@ function Decode(port, bytes){
     return decoded;
 }
 
-// The Things Industries / Chirpstack / Main
+// The Things Industries / Main
 function decodeUplink(input) {
     try {
         var bytes = input.bytes;
@@ -177,6 +177,25 @@ function decodeUplink(input) {
             return obj;
         }
 
+        function removeNullValues(obj) {
+            if (Array.isArray(obj)) {
+                return obj.map(removeNullValues).filter(function(value) {
+                    return value !== null;
+                });
+            } else if (obj !== null && typeof obj === "object") {
+                return Object.fromEntries(
+                    Object.entries(obj)
+                        .filter(function(entry) {
+                            return entry[1] !== null;
+                        })
+                        .map(function(entry) {
+                            return [entry[0], removeNullValues(entry[1])];
+                        })
+                );
+            }
+            return obj;
+        }
+
         // Route the message based on the command byte
         if (bytes[0] == 1) {
             data = handleKeepalive(bytes, data);
@@ -188,8 +207,13 @@ function decodeUplink(input) {
             }
         }
 
+        data.TimestampUTC = new Date().toUTCString();
+
+        data = capitalizeKeys(data);
+        data = removeNullValues(data);
+
         return {
-            data: capitalizeKeys(data)
+            data: data
         };
     } catch (e) {
         throw new Error('Unhandled data');
