@@ -2,6 +2,11 @@
 
 
 Changes made to the decoder
-- Added battery percentage
-- Added Timestamp
-- 
+
+- Battery percent added.
+- Clamp set to 0–100.
+- Min/max voltage kept internal only.
+- Device type added: "MC-PIR-Mini"
+- Readable UTC time added.
+- Keys capitalized in output.
+- Null values removed.
