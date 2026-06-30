@@ -10,6 +10,7 @@ Changes made to the decoder
 - Readable UTC time added.
 - Keys capitalized in output.
 - Null values removed.
+- Add AbsoluteHumidty in Decodernew.js
 
 ### Result Uplink Chirpstack
 
