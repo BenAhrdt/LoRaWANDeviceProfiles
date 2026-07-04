@@ -11,6 +11,7 @@ Changes made to the decoder
 - Keys capitalized in output.
 - Null values removed.
 - Add AbsoluteHumidty in Decodernew.js
+- Add DewPointTemperature in Decodernew.js
 
 ### Result Uplink Chirpstack
 
