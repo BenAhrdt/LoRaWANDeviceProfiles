@@ -40,12 +40,23 @@ function decodeUplink(input) {
             // Formula: RH[%] = (XX * 100) / 256
             data.relativeHumidity = Number(((bytes[3] * 100) / 256).toFixed(2));
             
-            
-                   
-         data.AbsoluteHumidity = Number((2.167 * data.relativeHumidity * 610.78 * Math.exp(17.27 * data.sensorTemperature / (data.sensorTemperature + 237.3)) / (data.sensorTemperature + 273.15) / 100).toFixed(1));
+            var t = data.sensorTemperature;
+            var rh = data.relativeHumidity;
 
-        
-        
+            data.AbsoluteHumidity = Number((
+                216.7 *
+                (rh / 100) *
+                6.112 *
+                Math.exp((17.62 * t) / (243.12 + t)) /
+                (273.15 + t)
+            ).toFixed(2));
+
+            if (rh > 0) {
+                var a = 17.625;
+                var b = 243.04;
+                var gamma = Math.log(rh / 100) + (a * t) / (b + t);
+                data.DewPointTemperature = Number(((b * gamma) / (a - gamma)).toFixed(2));
+            }
             
             // Bytes 4-5: Light sensor data
             // Byte 4: bits [15:8], Byte 5: bits [7:0]
@@ -60,7 +71,7 @@ function decodeUplink(input) {
             
             // Byte 6: Battery Voltage
             // Battery voltage [mV] = ((XX * 2200) / 255) + 1600
-            data.batteryVoltage = Number(((((bytes[6] * 2200) / 255) + 1600) / 1000).toFixed(2));
+            data.batteryVoltage = Number(((((bytes[6]*2200)/255) + 1600) / 1000).toFixed(2));
             data.batteryPercent = calculateBatteryPercent(data.batteryVoltage);
             
             // Byte 7 bit 0: Occupancy Flag (1 = Occupied, 0 = Unoccupied)
@@ -216,10 +227,6 @@ function decodeUplink(input) {
 
         data.TimestampUTC = new Date().toUTCString();
         
-               
-    
-        
-
         data = capitalizeKeys(data);
         data = removeNullValues(data);
 
@@ -229,4 +236,4 @@ function decodeUplink(input) {
     } catch (e) {
         throw new Error('Unhandled data');
     }
-}      
+}
