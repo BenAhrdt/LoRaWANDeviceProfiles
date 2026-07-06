@@ -1,4 +1,3 @@
-// DataCake
 function Decoder(bytes, port){
     var decoded = decodeUplink({ bytes: bytes, fPort: port }).data;
     return decoded;
@@ -16,8 +15,13 @@ function decodeUplink(input) {
         var bytes = input.bytes;
         var data = {};
 
+        // Battery calibration range (mV converted to V later)
         var batteryVoltageMax = 3.00;
         var batteryVoltageMin = 2.50;
+
+        // Offsets for calibration (Ändere diese Werte nach Bedarf)
+        var temperatureOffset = 0.0; // in °C
+        var humidityOffset = 0.0;    // in %RH
 
         function clamp(value, min, max) {
             return Math.min(max, Math.max(min, value));
@@ -34,11 +38,11 @@ function decodeUplink(input) {
             var tempHighBits = (bytes[1] & 0x03) << 8;
             var tempLowBits = bytes[2];
             var tempValue = tempHighBits | tempLowBits;
-            data.sensorTemperature = Number(((tempValue - 400) / 10).toFixed(2));
+            data.sensorTemperature = Number((((tempValue - 400) / 10) + temperatureOffset).toFixed(2));
             
             // Byte 3: Relative Humidity data
             // Formula: RH[%] = (XX * 100) / 256
-            data.relativeHumidity = Number(((bytes[3] * 100) / 256).toFixed(2));
+            data.relativeHumidity = Number((((bytes[3] * 100) / 256) + humidityOffset).toFixed(2));
             
             var t = data.sensorTemperature;
             var rh = data.relativeHumidity;
