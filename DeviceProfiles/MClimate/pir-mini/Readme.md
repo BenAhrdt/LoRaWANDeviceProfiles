@@ -12,6 +12,9 @@ Changes made to the decoder
 - Null values removed.
 - Add AbsoluteHumidty in Decodernew.js
 - Add DewPointTemperature in Decodernew.js
+- Add temperatureOffset in Decodernew.js
+- Add humidityOffset in Decodernew.js
+
 
 ### Result Uplink Chirpstack
 
