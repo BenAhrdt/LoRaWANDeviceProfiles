@@ -164,7 +164,14 @@ function decodeUplink(input) {
                             data.occupancyTimeout = (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16);
                         }
                         break;
+                    //////
                     case '3b':
+                        {
+                            command_len = 0;
+                            data.event = 'unoccupied';
+                        }
+                        break;
+                    case '3d':
                         {
                             command_len = 1;
                             data.pirDemoMode = parseInt(commands[i + 1], 16);
