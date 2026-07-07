@@ -21,7 +21,7 @@ function decodeUplink(input) {
 
         // Offsets for calibration (Ändere diese Werte nach Bedarf)
         var temperatureOffset = 0.0; // in °C
-        var humidityOffset = 0.0;    // in %RH
+        var humidityOffset = -10.0;    // in %RH
 
         function clamp(value, min, max) {
             return Math.min(max, Math.max(min, value));
@@ -170,11 +170,40 @@ function decodeUplink(input) {
                             data.pirDemoMode = parseInt(commands[i + 1], 16);
                         }
                         break;
+                    
+                    //////
+                    
+                    case '3f':
+                        {
+                            command_len = 1;
+                            data.pirOperationMode = parseInt(commands[i + 1], 16);
+                        }
+                        break;
+                    case '40':
+                        {
+                            command_len = 0;
+                            data.event = 'pirTrigger';
+                        }
+                        break;
+                    case '42':
+                        {
+                            command_len = 2;
+                            data.pirBlindTime = (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16);
+                        }
+                        break;
+                    case '44':
+                        {
+                            command_len = 1;
+                            data.pirCounterResetFlag = parseInt(commands[i + 1], 16);
+                        }
+                        break;
                     case 'a4': {
                         command_len = 1;
                         data.region = parseInt(commands[i + 1], 16);
                         break;
                     }
+                    
+                    //////
                     default:
                         break;
                 }
