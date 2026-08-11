@@ -18,7 +18,11 @@ Changes made to the decoder
 
 ### Result Uplink Chirpstack
 
-<img width="429" height="284" alt="image" src="https://github.com/user-attachments/assets/2e2fb2fa-4f30-499c-8679-a1f337a2e3f0" />
+<img width="409" height="280" alt="image" src="https://github.com/user-attachments/assets/41f4790d-fdea-45c6-bacf-f8e9c119be3a" />
+
+
+
+
 
 
 
