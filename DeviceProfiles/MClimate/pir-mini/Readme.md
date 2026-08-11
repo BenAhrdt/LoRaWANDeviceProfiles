@@ -42,12 +42,19 @@ Changes made to the decoder
 
 <img width="1022" height="394" alt="image" src="https://github.com/user-attachments/assets/e79694b9-8912-49e9-a37e-7b2a53ad159d" />
 
-<img width="1029" height="900" alt="image" src="https://github.com/user-attachments/assets/0d1e3429-4ef1-4845-9324-8579190a5673" />
+
+<img width="448" height="742" alt="image" src="https://github.com/user-attachments/assets/a7722ee5-f32d-4e9f-aa67-abaf7abce90d" />
+
+
 
 ### Result MQTT Live Monitor
 
 
-<img width="994" height="599" alt="image" src="https://github.com/user-attachments/assets/9c19672c-f398-47e4-b1b7-ddcd8f2a5a7d" />
+<img width="271" height="731" alt="image" src="https://github.com/user-attachments/assets/91ffd953-f0cd-42bc-8e68-06cc6a91157b" />
+
+
+<img width="1639" height="486" alt="image" src="https://github.com/user-attachments/assets/38241736-e658-45f4-bf19-449d69439721" />
+
 
 
 <img width="1050" height="692" alt="image" src="https://github.com/user-attachments/assets/f6abd726-9436-4993-ae76-6256c4fe4e50" />
