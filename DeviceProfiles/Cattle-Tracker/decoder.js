@@ -107,7 +107,7 @@ function decodeUplink(input) {
         data.latitude = ((toLittleEndianSigned(toPaddedHexString(latitudeInteger))) * 108) / 10 * 0.000001;
     }
 
-    data.batterypercent = bitsToUnsigned(hexToBits(toPaddedHexString(input.bytes[9] << 8))) / 256;
+    data.batteryLevel = bitsToUnsigned(hexToBits(toPaddedHexString(input.bytes[9] << 8))) / 256;
 
     return {
         data: data,
